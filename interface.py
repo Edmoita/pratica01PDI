@@ -151,7 +151,7 @@ class Application(Frame):
         self.txt_threshold['state'] = NORMAL
         self.txt_E['state'] = NORMAL
         '''
-        self.lbl_formula['text'] = 's = colocar a fórmula'
+        self.lbl_formula['text'] = 's = (r - novo_minimo) * (255 / (novo_maximo - novo_minimo))'
         self.txt_min['state'] = NORMAL
         self.txt_max['state'] = NORMAL
         self.btn_transform['command'] = self.transf_q1
