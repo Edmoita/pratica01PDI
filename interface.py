@@ -1,7 +1,6 @@
 from tkinter import *
 from tkinter import filedialog
-#from codigos import * Edson
-from main import *
+from transformations import *
 from utils import *
 
 class Application(Frame):
@@ -17,44 +16,54 @@ class Application(Frame):
         self.master.geometry("1600x1200+300+300")
         # Criar menu
         self.create_menu()
-        # Criar labels onde ficaram as figuras
+        # Criar labels onde ficarão as figuras
         self.create_image_labels()
-        # Criar label transformação
-        self.lbl_transform = Label(self.master)
-        self.lbl_transform.place(x=600, y=150)
-        # Limiar
-        self.lbl_threshold = Label(self.master, text='limiar', width=10, justify=LEFT)
+        # Criar label que identifica a transformação transformação
+        self.lbl_transform = Label(self.master, text='Transformação', font=('', 18), justify=CENTER)
+        self.lbl_transform.place(x=520, y=80)
+        # Criar a label de fórmula
+        self.lbl_formula = Label(self.master, text='Fórmula')
+        self.lbl_formula.place(x=600, y=130)
+        '''
+        # Limiar m
+        self.lbl_threshold = Label(self.master, text='m (limiar)', width=10, justify=LEFT)
         self.lbl_threshold.place(x=520, y=200)
         self.txt_threshold = Entry(self.master, bd=5, state=DISABLED)
         self.txt_threshold.place(x=610, y=200)
-        # Constante
-        self.lbl_constant = Label(self.master, text='c', width=10, justify=LEFT)
-        self.lbl_constant.place(x=520, y=240)
-        self.txt_constant = Entry(self.master, bd=5, state=DISABLED)
-        self.txt_constant.place(x=610, y=240)
-        # Gamma
-        self.lbl_gamma = Label(self.master, text='gamma', width=10, justify=LEFT)
-        self.lbl_gamma.place(x=520, y=280)
-        self.txt_gamma = Entry(self.master, bd=5, state=DISABLED)
-        self.txt_gamma.place(x=610, y=280)
-        # Bit plane
-        self.lbl_bit = Label(self.master, text='Plano de Bits', width=20, justify=LEFT)
-        self.lbl_bit.place(x=485, y=320)
-        self.txt_bit = Entry(self.master, bd=5, state=DISABLED)
-        self.txt_bit.place(x=610, y=320)
-        # Quinta questão
+        # Inclinação E
+        self.lbl_E = Label(self.master, text='E (inclinação)', width=10, justify=LEFT)
+        self.lbl_E.place(x=500, y=240)
+        self.txt_E = Entry(self.master, bd=5, state=DISABLED)
+        self.txt_E.place(x=610, y=240)
+        '''
+        # Novo mínimo
         self.lbl_min = Label(self.master, text='Novo mínimo', width=20, justify=LEFT)
-        self.lbl_min.place(x=485, y=360)
+        self.lbl_min.place(x=485, y=200)
         self.txt_min = Entry(self.master, bd=5, state=DISABLED)
-        self.txt_min.place(x=610, y=360)
+        self.txt_min.place(x=610, y=200)
+        # Novo máximo
         self.lbl_max = Label(self.master, text='Novo máximo', width=20, justify=LEFT)
-        self.lbl_max.place(x=485, y=400)
+        self.lbl_max.place(x=485, y=240)
         self.txt_max = Entry(self.master, bd=5, state=DISABLED)
-        self.txt_max.place(x=610, y=400)
-        #Create button
-        self.transf_button = Button(self.master, text='Transformar', state=DISABLED)
-        self.transf_button.place(x=630, y=450)
-
+        self.txt_max.place(x=610, y=240)
+        # Constante c
+        self.lbl_constant = Label(self.master, text='c', width=10, justify=LEFT)
+        self.lbl_constant.place(x=520, y=280)
+        self.txt_constant = Entry(self.master, bd=5, state=DISABLED)
+        self.txt_constant.place(x=610, y=280)
+        # Gamma y
+        self.lbl_gamma = Label(self.master, text='y (gamma)', width=10, justify=LEFT)
+        self.lbl_gamma.place(x=520, y=320)
+        self.txt_gamma = Entry(self.master, bd=5, state=DISABLED)
+        self.txt_gamma.place(x=610, y=320)
+        # Bit plane layer
+        self.lbl_bit = Label(self.master, text='Plano de Bits', width=20, justify=LEFT)
+        self.lbl_bit.place(x=485, y=360)
+        self.txt_bit = Entry(self.master, bd=5, state=DISABLED)
+        self.txt_bit.place(x=610, y=360)
+        # Botão Transformar
+        self.btn_transform = Button(self.master, text='TRANSFORMAR', state=DISABLED, relief=RAISED, bd='4')
+        self.btn_transform.place(x=630, y=490)
 
     def create_menu(self):
         menubar = Menu(self.master)
@@ -115,73 +124,95 @@ class Application(Frame):
 
     def load_image(self):
         image_types =[ ( "Image files",("*.jpg", "*.jpeg", "*.png", "*.gif") ), ("All files", ("*.*"))]
-        dlg = filedialog.Open(self, initialdir = 'resources', filetypes = image_types)
+        dlg = filedialog.Open(self, initialdir = 'images', filetypes = image_types)
         self.filename = dlg.show()
-        tk_image = convert_image_filename_to_tk(self.filename)
+        opencv_image = load_opencv_image(self.filename)
+        tk_image = convert_image_opencv_to_tk(opencv_image)
         self.create_original_image(tk_image)
 
     def disable_entries(self):
+        '''
         self.txt_threshold['state'] = DISABLED
+        self.txt_E['state'] = DISABLED
+        '''
+        self.txt_min['state'] = DISABLED
+        self.txt_max['state'] = DISABLED
         self.txt_constant['state'] = DISABLED
         self.txt_gamma['state'] = DISABLED
         self.txt_bit['state'] = DISABLED
-        self.txt_min['state'] = DISABLED
-        self.txt_max['state'] = DISABLED
         self.empty_transf()
 
     def q1(self):
         self.disable_entries()
         self.lbl_transform['text'] = 'ALARGAMENTO DE CONTRASTE'
-        self.transf_button['state'] = NORMAL
+        self.btn_transform['state'] = NORMAL
+        '''
+        self.lbl_formula['text'] = 's = 1/(1 + (m/r)^E)'
         self.txt_threshold['state'] = NORMAL
-        self.transf_button['command'] = self.transf_q1
+        self.txt_E['state'] = NORMAL
+        '''
+        self.lbl_formula['text'] = 's = colocar a fórmula'
+        self.txt_min['state'] = NORMAL
+        self.txt_max['state'] = NORMAL
+        self.btn_transform['command'] = self.transf_q1
 
     def q2(self):
         self.disable_entries()
         self.lbl_transform['text'] = 'TRANSFORMAÇÃO LOGARÍTMICA'
-        self.transf_button['state'] = NORMAL
+        self.lbl_formula['text'] = 's = c * log(1+r)'
+        self.btn_transform['state'] = NORMAL
         self.txt_constant['state'] = NORMAL
-        self.transf_button['command'] = self.transf_q2
+        self.btn_transform['command'] = self.transf_q2
 
     def q3(self):
         self.disable_entries()
         self.lbl_transform['text'] = 'TRANSFORMAÇÃO DE POTÊNCIA'
-        self.transf_button['state'] = NORMAL
+        self.lbl_formula['text'] = 's = c * r^y'
+        self.btn_transform['state'] = NORMAL
         self.txt_constant['state'] = NORMAL
         self.txt_gamma['state'] = NORMAL
-        self.transf_button['command'] = self.transf_q3
+        self.btn_transform['command'] = self.transf_q3
 
     def q4(self):
         self.disable_entries()
         self.lbl_transform['text'] = 'FATIAMENTO NO PLANO DE BITS'
-        self.transf_button['state'] = NORMAL
+        self.lbl_formula['text'] = 's = n-esimo bit de r'
+        self.btn_transform['state'] = NORMAL
         self.txt_bit['state'] = NORMAL
-        self.transf_button['command'] = self.transf_q4
+        self.btn_transform['command'] = self.transf_q4
 
     def q5(self):
         self.disable_entries()
-        #self.lbl_transform['text'] = 'NEGATIVO' Edson
-        self.lbl_transform['text'] = 'ALARGAMENTO DE CONTRASTE - RAIO X'
-        self.transf_button['state'] = NORMAL
-        self.txt_min['state'] = NORMAL
-        self.txt_max['state'] = NORMAL
-        self.transf_button['command'] = self.transf_q5
+        self.lbl_transform['text'] = 'NEGATIVO - RAIO X'
+        self.lbl_formula['text'] = 's = L-1-r'
+        self.btn_transform['state'] = NORMAL
+        self.btn_transform['command'] = self.transf_q5
 
     def transf_q1(self):
-        threshold = int(self.txt_threshold.get())
-        self.txt_threshold.delete(0, END)
-        image = load_image2(self.filename)
-        new_image = contrastStretching(image, threshold) # função Pablo
-        #new_image = contrast_stretching(image, threshold) função Edson
+        new_min = int(self.txt_min.get())
+        self.txt_min.delete(0, END)
+        new_max = int(self.txt_max.get())
+        self.txt_max.delete(0, END)
+        image = load_opencv_image(self.filename)
+        new_image = imgCorrection(image, new_min, new_max)
         tk_image = convert_image_opencv_to_tk(new_image)
         self.create_transformed_image(tk_image)
+        '''
+        threshold = int(self.txt_threshold.get())
+        self.txt_threshold.delete(0, END)
+        E = float(self.txt_E.get())
+        self.txt_E.delete(0, END)
+        image = load_opencv_image(self.filename)
+        new_image = contrastStretching(image, threshold, E)
+        tk_image = convert_image_opencv_to_tk(new_image)
+        self.create_transformed_image(tk_image)
+        '''
 
     def transf_q2(self):
         constant = float(self.txt_constant.get())
         self.txt_constant.delete(0, END)
-        image = load_image2(self.filename)
-        new_image = logarithmTransformation(image, constant) # Pablo
-        #new_image = logarithmic_transformation(image, constant) Edson
+        image = load_opencv_image(self.filename)
+        new_image = logarithmTransformation(image, constant)
         tk_image = convert_image_opencv_to_tk(new_image)
         self.create_transformed_image(tk_image)
 
@@ -190,27 +221,22 @@ class Application(Frame):
         self.txt_constant.delete(0, END)
         gamma = float(self.txt_gamma.get())
         self.txt_gamma.delete(0, END)
-        image = load_image2(self.filename)
-        new_image = gammaCorrection(image, gamma) # Pablo
-        #new_image = power_law_transformation(image, gamma, constant) Edson
+        image = load_opencv_image(self.filename)
+        new_image = gammaCorrection(image, gamma, constant)
         tk_image = convert_image_opencv_to_tk(new_image)
         self.create_transformed_image(tk_image)
 
     def transf_q4(self):
         bit = int(self.txt_bit.get())
         self.txt_bit.delete(0, END)
-        image = load_image2(self.filename)
-        new_image = bitsLayer(image, bit) # Pablo
-        #new_image = bit_plane_slicing(image, bit) Edson
+        image = load_opencv_image(self.filename)
+        new_image = bitsLayer(image, bit)
         tk_image = convert_image_opencv_to_tk(new_image)
         self.create_transformed_image(tk_image)
 
     def transf_q5(self):
-        new_min = int(self.txt_min.get())
-        new_max = int(self.txt_max.get())
-        image = load_image2(self.filename)
-        new_image = imgCorrection(image, new_min, new_max)
-        #new_image = image_negative(image) Edson
+        image = load_opencv_image(self.filename)
+        new_image = imgNegative(image)
         tk_image = convert_image_opencv_to_tk(new_image)
         self.create_transformed_image(tk_image)
 
