@@ -24,18 +24,6 @@ class Application(Frame):
         # Criar a label de fórmula
         self.lbl_formula = Label(self.master, text='Fórmula')
         self.lbl_formula.place(x=600, y=130)
-        '''
-        # Limiar m
-        self.lbl_threshold = Label(self.master, text='m (limiar)', width=10, justify=LEFT)
-        self.lbl_threshold.place(x=520, y=200)
-        self.txt_threshold = Entry(self.master, bd=5, state=DISABLED)
-        self.txt_threshold.place(x=610, y=200)
-        # Inclinação E
-        self.lbl_E = Label(self.master, text='E (inclinação)', width=10, justify=LEFT)
-        self.lbl_E.place(x=500, y=240)
-        self.txt_E = Entry(self.master, bd=5, state=DISABLED)
-        self.txt_E.place(x=610, y=240)
-        '''
         # Novo mínimo
         self.lbl_min = Label(self.master, text='Novo mínimo', width=20, justify=LEFT)
         self.lbl_min.place(x=485, y=200)
@@ -131,10 +119,6 @@ class Application(Frame):
         self.create_original_image(tk_image)
 
     def disable_entries(self):
-        '''
-        self.txt_threshold['state'] = DISABLED
-        self.txt_E['state'] = DISABLED
-        '''
         self.txt_min['state'] = DISABLED
         self.txt_max['state'] = DISABLED
         self.txt_constant['state'] = DISABLED
@@ -146,11 +130,6 @@ class Application(Frame):
         self.disable_entries()
         self.lbl_transform['text'] = 'ALARGAMENTO DE CONTRASTE'
         self.btn_transform['state'] = NORMAL
-        '''
-        self.lbl_formula['text'] = 's = 1/(1 + (m/r)^E)'
-        self.txt_threshold['state'] = NORMAL
-        self.txt_E['state'] = NORMAL
-        '''
         self.lbl_formula['text'] = 's = (r - novo_minimo) * (255 / (novo_maximo - novo_minimo))'
         self.txt_min['state'] = NORMAL
         self.txt_max['state'] = NORMAL
@@ -197,16 +176,6 @@ class Application(Frame):
         new_image = imgCorrection(image, new_min, new_max)
         tk_image = convert_image_opencv_to_tk(new_image)
         self.create_transformed_image(tk_image)
-        '''
-        threshold = int(self.txt_threshold.get())
-        self.txt_threshold.delete(0, END)
-        E = float(self.txt_E.get())
-        self.txt_E.delete(0, END)
-        image = load_opencv_image(self.filename)
-        new_image = contrastStretching(image, threshold, E)
-        tk_image = convert_image_opencv_to_tk(new_image)
-        self.create_transformed_image(tk_image)
-        '''
 
     def transf_q2(self):
         constant = float(self.txt_constant.get())

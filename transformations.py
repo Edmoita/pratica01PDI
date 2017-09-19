@@ -1,20 +1,8 @@
 import numpy as np
 import math as mt
 
+
 # Q1
-def contrastStretching(img, threshold, E):
-    height = img.shape[0]
-    width = img.shape[1]
-
-    new_img = np.copy(img)
-
-    for i in range(height):
-        for j in range(width):
-            new_img[i][j] = 255* (1/(1 + (threshold/(img[i][j]/255))**E))
-
-    return new_img
-
-# Q1 - Alternativa
 def imgCorrection(img, new_min, new_max):
     height = img.shape[0]
     width = img.shape[1]
